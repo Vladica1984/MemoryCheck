@@ -12,6 +12,7 @@ if [[ "$free" -le $low_memory_limit ]]; then
   free -mt >> "$file"
   echo "</p>" >> "$file"
   echo -e "<font color="red">Warning, server memory running low! Free memory: $free MB</font>" | mail -a 'Content-Type: text/html' -A "$file" -s "$Subject" vpopovic@tmns.com
+  echo -e "Warning, server memory running low! Free memory: $free MB" | mail -A "$file" -s "$Subject" vpopovic@tmns.com
   rm -rf "$file"
 fi
 
