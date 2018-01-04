@@ -2,7 +2,6 @@
 
 Subject=$(hostname)
 
-
 free=$(free -mt | grep Mem | awk '{print $4}')
 
 if [[ "$free" -le 2000 ]]; then
@@ -28,6 +27,10 @@ printf "Free memory is checked with free -mt command and bellow is current situa
 echo " " >>./top_proccesses_consuming_memory.txt
 
 free -mt >> ./top_proccesses_consuming_memory.txt
+
+echo " " >>./top_proccesses_consuming_memory.txt
+
+date "+%Y-%m-%d %H:%M:%S" >> ./top_proccesses_consuming_memory.txt
 
 cat ./top_proccesses_consuming_memory.txt | mail -s "$Subject" vpopovic@tmns.com
 
