@@ -1,22 +1,22 @@
 #!/bin/bash -x
 
-Subject=$(hostname)
+if [ "$#" -ne 2 ]; then
+        echo "USAGE: $0 <EMAIL> <FREE MEMORY TRIGGER>"
+        exit 1
+fi
 
-file="/tmp/top_proccesses_consuming_memory.txt"
+
+subject="Low memory at $(hostname)"
+
 email="$1"
 freeMemTrigger="$2"
 
 free=$(free -mt | grep Mem | awk '{print $4}')
 
 if [[ "$free" -le $freeMemTrigger ]]; then
-	printf "From: Vladimir <vpopovic@tmns.com>
-To: $email
-Subject: Warning email
-MIME-Version: 1.0
-Content-Type: text/html
-Content-Disposition: inline
+	printf "From: Vladimir <vpopovic@tmns.com>\nTo: $email\nSubject: $subject\nMIME-Version: 1.0\nContent-Type: text/html\nContent-Disposition: inline\n
 <html>
-<head><title>Warning email</title>
+<head><title>$subject</title>
 </head>
 <body style=\"font: monospace;\">
 <pre style=\"color: red\">Warning, server memory running low! Free memory: $free MB</pre>
