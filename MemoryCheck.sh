@@ -1,18 +1,38 @@
 #!/bin/bash -x
 
 Subject=$(hostname)
-file="/tmp/top_proccesses_consuming_memory.html"
-free=$(free -mt | grep Mem | awk '{print $4}')
-low_memory_limit=$1
 
-if [[ "$free" -le $low_memory_limit ]]; then
-  echo "<p><font color="red">Checking the running listeners and free memory</font></p><p>" | head >"$file"
-  netstat -ltn | head >>"$file"
-  echo "</p><p>" >> "$file"
-  free -mt >> "$file"
-  echo "</p>" >> "$file"
-  echo -e "<font color="red">Warning, server memory running low! Free memory: $free MB</font>" | mail -a 'Content-Type: text/html' -A "$file" -s "$Subject" vpopovic@tmns.com
-  rm -rf "$file"
+
+free=$(free -mt | grep Mem | awk '{print $4}')
+
+if [[ "$free" -le 2000 ]]; then
+
+printf "Warning, server memory running low! Free memory: $free MB\n" > ./top_proccesses_consuming_memory.txt
+
+echo " " >>./top_proccesses_consuming_memory.txt
+
+printf "Checking the running listeners and free memory\n"  >> ./top_proccesses_consuming_memory.txt
+
+echo " " >>./top_proccesses_consuming_memory.txt
+
+printf "With netstat -ltn we are checking running listeners:\n"  >> ./top_proccesses_consuming_memory.txt
+
+echo " " >>./top_proccesses_consuming_memory.txt
+
+netstat -ltn | grep 631 >>./top_proccesses_consuming_memory.txt
+
+echo " " >>./top_proccesses_consuming_memory.txt
+
+printf "Free memory is checked with free -mt command and bellow is current situation:\n"  >> ./top_proccesses_consuming_memory.txt
+
+echo " " >>./top_proccesses_consuming_memory.txt
+
+free -mt >> ./top_proccesses_consuming_memory.txt
+
+cat ./top_proccesses_consuming_memory.txt | mail -s "$Subject" vpopovic@tmns.com
+
+rm -rf ./top_proccesses_consuming_memory.txt
+
 fi
 
 exit 0
